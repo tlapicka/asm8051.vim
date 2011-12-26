@@ -50,7 +50,7 @@ syn match decNumber		"\<[0-9]\+D\=\>"
 syn match   asm8051Reg		"[Rr][0-7]"
 
 " Ports
-syn match   asm8051Port		"[Pp][0-3]\(\.[0-9]\)\?"
+syn match   asm8051Port		"[Pp][0-3]\(\.[0-7]\)\?"
 
 " SFRs
 syn keyword asm8051Reg		a b psw dps dptr dpl dph dpl1 dph1 

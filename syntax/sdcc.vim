@@ -20,7 +20,7 @@ syn match   asm8051PreProc contained "$\S*"
 syn match   asm8051Included contained "["<][^"]*[>"]"
 
 " Comments
-syn region  asm8051Comment contained start=";" end="$" contains=asmx86Todo
+syn region  asm8051Comment contained start=";" end="$"
 syn region  asm8051Commentcpp contained start="\s*#\s*if\s\+0\+\>" end="\s*#\s*endif\>" contains=asmx86Todo
 syn region  asm8051Commentcxx contained start="//" end="$" contains=asmx86Todo
 syn region  asm8051Commentc contained start="/\*" end="\*/" contains=asmx86Todo
@@ -43,7 +43,7 @@ syn match decNumber contained "\<[0-9]\+D\=\>"
 syn match   asm8051Reg		"[Rr][0-7]"
 
 " Ports
-syn match   asm8051Port		"[Pp][0-3]\(\.[0-9]\)\?"
+syn match   asm8051Port		"[Pp][0-3]\(_[0-7]\)\?"
 
 " SFRs
 syn keyword asm8051Reg		a b psw dps dptr dpl dph dpl1 dph1 
@@ -68,7 +68,7 @@ syn match   asm8051Opcode contained	"\<r[rl][c]*\>"
 syn match   asm8051Opcode contained	"\<swap\>"
 
 " Data Transfer Operations
-syn match   asm8051Opcode contained	"\<mov[cx]*\>"
+syn match   asm8051Opcode contained 	"\<mov[cx]*\>"
 syn match   asm8051Opcode contained	"\<push\>"
 syn match   asm8051Opcode contained	"\<pop\>"
 syn match   asm8051Opcode contained	"\<xch{d]*\>"
@@ -84,7 +84,7 @@ syn match   asm8051Opcode contained	"\<djnz\>"
 syn match   asm8051Opcode contained	"\<nop\>"
 
 " Boolean Operations
-syn match   asm8051Opcode	"\<setb\>"
+syn match   asm8051Opcode contained "\<setb\>"
 " all other boolean operations are coverd in other sections
 " op codes are the same, just arguments are different
 
@@ -102,7 +102,7 @@ syn match   asm8051Operator contained	"|"		" or
 syn match   asm8051Operator contained	"||"
 syn match   asm8051Operator contained	"\<BITOR\>"
 syn match   asm8051Operator contained	"\<OR\>"
-syn match   asm8051Operator contained contained	"\^"		" xor
+syn match   asm8051Operator contained	"\^"		" xor
 syn match   asm8051Operator contained	"\<BITXOR\>"
 syn match   asm8051Operator contained	"\<XOR\>"
 syn match   asm8051Operator contained	"\~"		" not
@@ -218,15 +218,21 @@ syn match   asm8051Directive contained	"\<D[CS]\(\(8\)\|\(16\)\|\(24\)\|\(32\)\)
 
 " label after instruction
 "\<[als]*jmp\>
-syn region  asm8051Label matchgroup=asm8051Opcode start="\<[als]*jmp\s\+" end="\s\|$"
-syn region  asm8051Label matchgroup=asm8051Opcode start="\<[al]*call\s\+" end="\s\|$"
+syn region  asm8051Label contained matchgroup=asm8051Opcode start="\<[als]*jmp\s\+" end="\s\|$"
+syn region  asm8051Label contained matchgroup=asm8051Opcode start="\<[al]*call\s\+" end="\s\|$"
 syn match   asm8051Label contained "^\s*\d\d\d\d\d\$[:]"
 syn match   asm8051Label contained "\d\d\d\d\d\$\(\s\|$\)" 
 
 " Inline assemler
-syn region inlineAssembler start="__\?asm" end="__\?endasm" contains=asm8051.*,...Number
+syn region inlineAssembler start="__asm" end="__endasm" contains=asm8051.*,...Number 
+
+
+"syn region sdccCode start="(" end=")" transparent contains=ALLBUT,asm8051.*,...Number 
 
 syn case match
+syn cluster	cParenGroup	add=asm8051.*
+syn cluster	cParenGroup	remove=asm8051Reg,asm8051Port
+"syn cluster	cParenGroup	remove=asm8051Operator
 
 " Define the default highlighting.
 " For version 5.7 and earlier: only when not done already
@@ -274,6 +280,7 @@ if version >= 508 || !exists("did_asm8051_syntax_inits")
   HiLink asm8051Opcode		Keyword
   HiLink asm8051Cond		Conditional	" Statement
   HiLink inlineAssembler	Special
+  HiLink sdccCode	Special
 
   delcommand HiLink
 endif
